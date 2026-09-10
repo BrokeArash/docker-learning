@@ -1,6 +1,16 @@
 from flask import Flask, jsonify
+import psycopg2
 
 app = Flask(__name__)
+
+
+def get_db_connection():
+    return psycopg2.connect(
+        host="database",
+        database="task_manager",
+        user="task_user",
+        password="task_password"
+    )
 
 
 @app.route("/")
@@ -12,10 +22,19 @@ def home():
 
 @app.route("/api/tasks")
 def tasks():
+    connection = get_db_connection()
+
+    cursor = connection.cursor()
+    cursor.execute("SELECT id, title FROM tasks ORDER BY id")
+
+    rows = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
+
     return jsonify([
-        {"id": 1, "title": "Learn Docker"},
-        {"id": 2, "title": "Build a Docker project"},
-        {"id": 3, "title": "Learn Docker Compose"}
+        {"id": row[0], "title": row[1]}
+        for row in rows
     ])
 
 
