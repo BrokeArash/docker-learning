@@ -18,3 +18,11 @@ jobs:
 
       - name: Build Docker images
         run: docker compose build
+
+      - name: Start services
+        run: docker compose up -d
+
+      - name: Test API
+        run: |
+          sleep 5
+        curl --fail http://localhost:8080/api/tasks
