@@ -1,8 +1,17 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import psycopg2
 import os
+import logging
 
 app = Flask(__name__)
+
+logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(message)s"
+)
+
+logger = logging.getLogger(__name__)
+
 
 
 def get_db_connection():
@@ -37,6 +46,33 @@ def tasks():
         {"id": row[0], "title": row[1]}
         for row in rows
     ])
+
+@app.route("/api/tasks", methods=["POST"])
+def create_task():
+    data = request.get_json()
+
+    title = data.get("title")
+
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    cursor.execute(
+        "INSERT INTO tasks (title) VALUES (%s) RETURNING id, title",
+        (title,)
+    )
+
+    task = cursor.fetchone()
+
+    connection.commit()
+    logger.info("Created task: %s", task[1])
+
+    cursor.close()
+    connection.close()
+
+    return jsonify({
+        "id": task[0],
+        "title": task[1]
+    }), 201
 
 
 if __name__ == "__main__":
