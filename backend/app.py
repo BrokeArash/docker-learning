@@ -29,6 +29,12 @@ def home():
         "message": "Hello from Docker Task Manager API!"
     })
 
+@app.route("/health")
+def health():
+    return jsonify({
+        "status": "healthy"
+        })
+
 
 @app.route("/api/tasks")
 def tasks():

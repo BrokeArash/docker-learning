@@ -4,6 +4,8 @@ services:
     build: ./backend
     container_name: task-manager-backend
    
+    restart: unless-stopped
+    
     environment:
       DB_HOST: database
       DB_NAME: ${DB_NAME}
@@ -17,9 +19,17 @@ services:
     expose:
       - "5000"
 
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
   database:
     image: postgres:17-alpine
     container_name: task-manager-database
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -39,6 +49,7 @@ services:
   frontend:
     build: ./frontend
     container_name: task-manager-frontend
+    restart: unless-stopped
     ports:
       - "8080:80"
     depends_on:
