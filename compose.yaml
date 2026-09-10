@@ -1,0 +1,16 @@
+services:
+
+  backend:
+    build: ./backend
+    container_name: task-manager-backend
+    expose:
+      - "5000"
+
+
+  frontend:
+    build: ./frontend
+    container_name: task-manager-frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend    
