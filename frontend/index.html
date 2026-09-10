@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Docker Task Manager</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        .task {
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        #status {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Docker Task Manager</h1>
+
+    <div id="status">
+        Loading tasks...
+    </div>
+
+    <div id="tasks"></div>
+
+    <script>
+        fetch("/api/tasks")
+            .then(response => response.json())
+            .then(tasks => {
+
+                document.getElementById("status").textContent =
+                    "Tasks loaded successfully!";
+
+                const tasksContainer =
+                    document.getElementById("tasks");
+
+                tasks.forEach(task => {
+
+                    const taskElement =
+                        document.createElement("div");
+
+                    taskElement.className = "task";
+
+                    taskElement.textContent =
+                        `${task.id}. ${task.title}`;
+
+                    tasksContainer.appendChild(taskElement);
+                });
+            })
+            .catch(error => {
+
+                document.getElementById("status").textContent =
+                    "Could not connect to backend.";
+
+                console.error(error);
+            });
+    </script>
+
+</body>
+</html>
