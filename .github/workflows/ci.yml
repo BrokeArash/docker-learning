@@ -12,6 +12,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      DB_NAME: task_manager
+      DB_USER: task_user
+      DB_PASSWORD: task_password
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
