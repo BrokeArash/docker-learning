@@ -61,8 +61,8 @@ jobs:
 
       - name: Push Docker images
         run: |
-          docker tag docker-learning-backend ghcr.io/${{ github.repository_owner }}/docker-learning-backend:latest
-          docker tag docker-learning-frontend ghcr.io/${{ github.repository_owner }}/docker-learning-frontend:latest
+          docker tag docker-learning-backend ghcr.io/brokearash/docker-learning-backend:latest
+          docker tag docker-learning-frontend ghcr.io/brokearash/docker-learning-frontend:latest
 
-          docker push ghcr.io/${{ github.repository_owner }}/docker-learning-backend:latest
-          docker push ghcr.io/${{ github.repository_owner }}/docker-learning-frontend:latest
+          docker push ghcr.io/brokearash/docker-learning-backend:latest
+          docker push ghcr.io/brokearash/docker-learning-frontend:latest
