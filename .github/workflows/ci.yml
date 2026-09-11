@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,6 +24,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Log in to Github Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker images
         run: docker compose build
@@ -47,3 +58,11 @@ jobs:
       - name: Test API
         run: |
           curl --fail http://localhost:8080/api/tasks
+
+      - name: Push Docker images
+        run: |
+          docker tag docker-learning-backend ghcr.io/${{ github.repository_owner }}/docker-learning-backend:latest
+          docker tag docker-learning-frontend ghcr.io/${{ github.repository_owner }}/docker-learning-frontend:latest
+
+          docker push ghcr.io/${{ github.repository_owner }}/docker-learning-backend:latest
+          docker push ghcr.io/${{ github.repository_owner }}/docker-learning-frontend:latest
